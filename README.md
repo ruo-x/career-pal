@@ -9,3 +9,5 @@ API calls: Axios or fetch to talk to backend.
 
 Backend (model + API):
 Python (FastAPI or Flask) → serve endpoints like /chat.
+
+Model: google/gemma-2b-it on HuggingFace
