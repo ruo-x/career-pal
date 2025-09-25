@@ -2,6 +2,8 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from transformers import pipeline, AutoTokenizer
 from fastapi.middleware.cors import CORSMiddleware
+import uvicorn
+import torch
 
 model = "google/gemma-2b-it"
 
@@ -62,4 +64,15 @@ async def chat(req: ChatRequest):
     assistant_reply = generated_text.split("Assistant:")[-1].strip()
     return {"response": assistant_reply}
 
-# Run with: uvicorn llm_server:app --host 0.0.0.0 --port 8000
+@app.on_event("shutdown")
+def shutdown_event():
+    print("Cleaning up model resources...")
+    global chatbot
+    torch.cuda.empty_cache()
+    del chatbot  # free Python reference
+
+if __name__ == "__main__":
+    try:
+        uvicorn.run("llm_server:app", host="0.0.0.0", port=8000, reload=True)
+    except KeyboardInterrupt:
+        print("Shutting down server...")
