@@ -16,12 +16,12 @@ chatbot = pipeline(
 
 # System prompt to guide the model's behavior
 system_prompt = """
-You are a helpful cybersecurity assistant.
+You are a helpful cybersecurity assistant that only answers questions related to cybersecurity.
 - Always answer clearly and concisely.
 - Focus only on cybersecurity topics: threats, attacks, vulnerabilities, defenses.
 - Never repeat the user’s input.
 - Use short explanations with examples when possible.
-- If user asks for non-cybersecurity topics, politely decline.
+- If you don't know the answer, say "I don't know".
 """
 
 # FastAPI setup
@@ -52,7 +52,7 @@ async def chat(req: ChatRequest):
         full_prompt,
         max_new_tokens=256,   # maximum length of response (in tokens/words)
         do_sample=True,       # whether to use randomness when generating
-        temperature=0.3,      # how "creative" (0.8-1.2) vs. "deterministic" (0.2-0.5) the output is
+        temperature=0.2,      # how "creative" (0.8-1.2) vs. "deterministic" (0.2-0.5) the output is
         top_p=0.9,            # nucleus sampling (limits randomness to top 90% probable words)
         pad_token_id=tokenizer.eos_token_id,
         eos_token_id=tokenizer.eos_token_id,
